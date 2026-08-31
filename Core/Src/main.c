@@ -87,10 +87,10 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-	// 段收集自动初始化
+	// 娈垫敹闆嗚嚜鍔ㄥ垵濮嬪寲
 	auto_initcalls();
   /* USER CODE END 2 */
-	LED_FSM_SetBlinkEvent(&led_blue_fsm,1,500);
+
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
@@ -98,8 +98,18 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  uint32_t systick = HAL_GetTick();
-	  LED_FSM_Run(&led_blue_fsm, systick);
+		uint32_t systick = HAL_GetTick();
+
+
+		if(Key_GetState(KEY) == KEY_STATE_Press)
+		{
+			LED_FSM_SetONEvent(&led_blue_fsm);
+		}
+		else
+		{
+			LED_FSM_SetBlinkEvent(&led_blue_fsm, 500, 500);
+		}
+		LED_FSM_Run(&led_blue_fsm, systick);
   }
   /* USER CODE END 3 */
 }

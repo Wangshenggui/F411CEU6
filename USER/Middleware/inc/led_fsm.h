@@ -7,18 +7,18 @@
 /*LED FSM状态枚举*/
 typedef enum
 {
-    LED_FSM_STATE_OFF,
-    LED_FSM_STATE_ON,
+    LED_FSM_STATE_OFF,		// 关闭状态
+    LED_FSM_STATE_ON,		// 开启状态
     LED_FSM_STATE_COUNT
 } LED_FSM_STATE;
 
 /*LED FSM事件枚举*/
 typedef enum
 {
-    LED_FSM_EVENT_IDLE,
-    LED_FSM_EVENT_OFF,
-    LED_FSM_EVENT_ON,
-    LED_FSM_EVENT_BLINK,
+    LED_FSM_EVENT_IDLE,		// 空闲
+    LED_FSM_EVENT_OFF,		// 关闭
+    LED_FSM_EVENT_ON,		// 开启
+    LED_FSM_EVENT_BLINK,	// 闪烁
     LED_FSM_EVENT_COUNT
 } LED_FSM_EVENT;
 

@@ -1,5 +1,5 @@
 f411ceu6\led_fsm.o: ..\USER\Middleware\src\led_fsm.c
-f411ceu6\led_fsm.o: ..\USER\Middleware\inc\led_fsm.h
+f411ceu6\led_fsm.o: ../USER/Middleware/inc/led_fsm.h
 f411ceu6\led_fsm.o: ../Core/Inc/main.h
 f411ceu6\led_fsm.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
 f411ceu6\led_fsm.o: ../Core/Inc/stm32f4xx_hal_conf.h
@@ -34,3 +34,5 @@ f411ceu6\led_fsm.o: ../SYSTEM/inc/system.h
 f411ceu6\led_fsm.o: ../SYSTEM/inc/module_auto_init.h
 f411ceu6\led_fsm.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 f411ceu6\led_fsm.o: D:\Keil\ARM\ARMCC\Bin\..\include\string.h
+f411ceu6\led_fsm.o: ../USER/BSP/inc/key.h
+f411ceu6\led_fsm.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdbool.h

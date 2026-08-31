@@ -1,10 +1,11 @@
---cpu=Cortex-M4.fp
+--cpu=Cortex-M4.fp.sp
 "f411ceu6\startup_stm32f411xe.o"
 "f411ceu6\main.o"
 "f411ceu6\gpio.o"
 "f411ceu6\stm32f4xx_it.o"
 "f411ceu6\stm32f4xx_hal_msp.o"
 "f411ceu6\led.o"
+"f411ceu6\key.o"
 "f411ceu6\led_fsm.o"
 "f411ceu6\module_auto_init.o"
 "f411ceu6\system.o"
@@ -23,6 +24,6 @@
 "f411ceu6\stm32f4xx_hal_exti.o"
 "f411ceu6\system_stm32f4xx.o"
 --strict --scatter "F411CEU6\F411CEU6.sct"
---summary_stderr --info summarysizes --map --xref --callgraph --symbols
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
 --list "F411CEU6.map" -o F411CEU6\F411CEU6.axf
