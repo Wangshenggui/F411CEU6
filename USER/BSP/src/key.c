@@ -9,13 +9,13 @@ struct Key_Structure
     uint16_t GPIO_Pin;          // KEY引脚
     KEY_POLARITY polarity;      // KEY极性按下时电平状态
 };
-// 定义按键ID注册表
+/*定义按键ID注册表*/
 const Key_Structure key_registry[KEY_COUNT] = 
 {
 	[KEY] = {key_GPIO_Port, key_Pin, KEY_POLARITY_LOW},
 };
 
-// bsp层自动初始化
+/*bsp层自动初始化*/
 void bsp_key_init()
 {
 	// 初始化KEY

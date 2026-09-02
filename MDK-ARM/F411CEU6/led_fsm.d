@@ -30,9 +30,5 @@ f411ceu6\led_fsm.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramf
 f411ceu6\led_fsm.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h
 f411ceu6\led_fsm.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h
 f411ceu6\led_fsm.o: ../USER/BSP/inc/led.h
-f411ceu6\led_fsm.o: ../SYSTEM/inc/system.h
 f411ceu6\led_fsm.o: ../SYSTEM/inc/module_auto_init.h
-f411ceu6\led_fsm.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdio.h
-f411ceu6\led_fsm.o: D:\Keil\ARM\ARMCC\Bin\..\include\string.h
-f411ceu6\led_fsm.o: ../USER/BSP/inc/key.h
-f411ceu6\led_fsm.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdbool.h
+f411ceu6\led_fsm.o: ..\USER\Utils\inc\utils_time.h

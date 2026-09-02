@@ -35,5 +35,5 @@ f411ceu6\main.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 f411ceu6\main.o: D:\Keil\ARM\ARMCC\Bin\..\include\string.h
 f411ceu6\main.o: ../USER/BSP/inc/led.h
 f411ceu6\main.o: ../USER/BSP/inc/key.h
-f411ceu6\main.o: D:\Keil\ARM\ARMCC\Bin\..\include\stdbool.h
 f411ceu6\main.o: ../USER/Middleware/inc/led_fsm.h
+f411ceu6\main.o: ../USER/Middleware/inc/key_fsm.h

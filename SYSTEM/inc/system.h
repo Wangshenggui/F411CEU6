@@ -18,6 +18,7 @@
 
 /*************MID头文件加载************/
 #include "led_fsm.h"
+#include "key_fsm.h"
 /**************************************/
 
 /*************APP头文件加载************/
@@ -82,11 +83,7 @@
     #define debug_error(fmt, ...)  ((void)0)
 #endif
     
-/*计算时间差*/
-static inline uint32_t get_tick_diff(uint32_t current, uint32_t previous)
-{
-    return current - previous;
-}
+
 
 #endif
 

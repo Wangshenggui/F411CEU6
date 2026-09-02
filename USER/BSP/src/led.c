@@ -9,14 +9,14 @@ struct LED_Structure
     uint16_t GPIO_Pin;          // LED引脚
 	LED_POLARITY polarity;      // LED极性
 };
-// led注册表
+/*led注册表*/
 const LED_Structure led_registry[LED_COUNT] =
 {
 	// ID    =    端口    引脚    点亮电平
 	[LED_BLUE] = {led_blue_GPIO_Port, led_blue_Pin, LED_POLARITY_LOW},
 };
 
-// bsp层自动初始化
+/*bsp层自动初始化*/
 void bsp_led_init()
 {
 	// 初始化LED

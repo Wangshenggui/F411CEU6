@@ -2,7 +2,6 @@
 #define _KEY_H_
 
 #include "main.h"
-#include <stdbool.h>
 
 
 /*按键 ID枚举*/

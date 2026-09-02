@@ -1,8 +1,8 @@
 #include "led_fsm.h"
-#include "system.h"
 #include "module_auto_init.h"
+#include "utils_time.h"
 
-// LED FSM结构体定义
+/*LED FSM结构体定义*/
 struct LED_FSM_Structure
 {
 	LED_ID id;   				// led操作id
@@ -13,10 +13,10 @@ struct LED_FSM_Structure
 	uint32_t blink_on_time;     // 闪烁常亮时间(ms)
 	uint32_t blink_off_time;    // 闪烁熄灭时间(ms)
 };
-// 定义LED状态机结构体
+/*定义LED状态机结构体*/
 LED_FSM_Structure led_blue_fsm;
 
-// mid层自动初始化
+/*mid层自动初始化*/
 void mid_led_fsm_init()
 {
 	// 初始化LED状态机
@@ -67,6 +67,16 @@ void LED_FSM_SetBlinkEvent(LED_FSM_Structure* fsm, uint32_t on_time, uint32_t of
     fsm->blink_off_tick = 0;
     fsm->blink_on_time = on_time;
     fsm->blink_off_time = off_time;
+}
+
+/*led状态切换*/
+void LED_FSM_SetToggleEvent(LED_FSM_Structure* fsm)
+{
+	if (fsm == NULL)
+	{
+		return;
+	}
+	fsm->event = LED_FSM_EVENT_TOGGLE;
 }
 
 /*关闭led*/
@@ -151,6 +161,23 @@ void LED_FSM_Run(LED_FSM_Structure* fsm, uint32_t tick)
             }
         }
         break;
+		
+		// 切换事件
+		case(LED_FSM_EVENT_TOGGLE):
+		{
+			if (fsm->state == LED_FSM_STATE_ON)
+			{
+				LED_SetState(fsm->id, LED_STATE_OFF);
+				fsm->state = LED_FSM_STATE_OFF;
+			}
+			else
+			{
+				LED_SetState(fsm->id, LED_STATE_ON);
+				fsm->state = LED_FSM_STATE_ON;
+			}
+			fsm->event = LED_FSM_EVENT_IDLE;
+		}
+		break;
 
         // 默认事件(无事件)
         default:

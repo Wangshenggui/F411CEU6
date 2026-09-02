@@ -25,7 +25,7 @@ typedef enum
     LED_STATE_ON
 } LED_STATE;
 
-// 前向声明，防止外部修改
+/*前向声明，防止外部修改*/
 typedef struct LED_Structure LED_Structure;
 extern const LED_Structure led_registry[LED_COUNT];
 

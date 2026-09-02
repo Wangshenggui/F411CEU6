@@ -54,7 +54,34 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+/*key按键单击回调函数*/
+void key_ClickHandler(KEY_ID id)
+{
+	static uint8_t flag = 0;
+	
+	switch(id)
+	{
+		case(KEY):
+		{
+			if (flag)
+			{
+				LED_FSM_SetBlinkEvent(&led_blue_fsm, 100, 500);
+			}
+			else
+			{
+				LED_FSM_SetBlinkEvent(&led_blue_fsm, 500, 100);
+			}
+			flag = !flag;
+		}
+		break;
+		
+		default:
+		{
+			
+		}
+		break;
+	}
+}
 /* USER CODE END 0 */
 
 /**
@@ -99,19 +126,12 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 		uint32_t systick = HAL_GetTick();
-
-
-		if(Key_GetState(KEY) == KEY_STATE_Press)
-		{
-			LED_FSM_SetONEvent(&led_blue_fsm);
-		}
-		else
-		{
-			LED_FSM_SetBlinkEvent(&led_blue_fsm, 500, 500);
-		}
+	  
+		KEY_FSM_Run(&key_fsm, systick);
 		LED_FSM_Run(&led_blue_fsm, systick);
   }
   /* USER CODE END 3 */
+  
 }
 
 /**

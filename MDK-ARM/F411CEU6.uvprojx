@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F411xE</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;../USER/BSP/inc;../SYSTEM/inc;../USER/Middleware/inc</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;../USER/BSP/inc;../SYSTEM/inc;../USER/Middleware/inc;..\USER\Utils\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -439,6 +439,11 @@
               <FileType>1</FileType>
               <FilePath>..\USER\Middleware\src\led_fsm.c</FilePath>
             </File>
+            <File>
+              <FileName>key_fsm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\Middleware\src\key_fsm.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -453,6 +458,16 @@
               <FileName>system.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\SYSTEM\src\system.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Utils</GroupName>
+          <Files>
+            <File>
+              <FileName>utils_time.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\Utils\src\utils_time.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -545,5 +560,14 @@
     <components/>
     <files/>
   </RTE>
+
+  <LayerInfo>
+    <Layers>
+      <Layer>
+        <LayName>F411CEU6</LayName>
+        <LayPrjMark>1</LayPrjMark>
+      </Layer>
+    </Layers>
+  </LayerInfo>
 
 </Project>
