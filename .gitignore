@@ -1,0 +1,13 @@
+*.o
+*.d
+*.crf
+*.lnp
+*.axf
+*.hex
+*.htm
+*.dep
+*.iex
+*.Bak
+*.build_log.htm
+
+*.uvguix.*
