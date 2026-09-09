@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "usb_device.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -63,6 +64,11 @@ void key_ClickHandler(KEY_ID id)
 	{
 		case(KEY):
 		{
+			debug_printf("key click\r\n");
+			debug_info("key click\r\n");
+			debug_warn("key click\r\n");
+			debug_error("key click\r\n");
+			
 			if (flag)
 			{
 				LED_FSM_SetBlinkEvent(&led_blue_fsm, 100, 500);
@@ -113,6 +119,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
 	// 段收集自动初始化
 	auto_initcalls();
@@ -131,7 +138,6 @@ int main(void)
 		LED_FSM_Run(&led_blue_fsm, systick);
   }
   /* USER CODE END 3 */
-  
 }
 
 /**
@@ -155,8 +161,8 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 12;
-  RCC_OscInitStruct.PLL.PLLN = 96;
+  RCC_OscInitStruct.PLL.PLLM = 25;
+  RCC_OscInitStruct.PLL.PLLN = 192;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 4;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)

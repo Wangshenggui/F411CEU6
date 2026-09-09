@@ -1,5 +1,5 @@
 f411ceu6\utils_time.o: ..\USER\Utils\src\utils_time.c
-f411ceu6\utils_time.o: ..\USER\Utils\inc\utils_time.h
+f411ceu6\utils_time.o: ../USER/Utils/inc/utils_time.h
 f411ceu6\utils_time.o: ../Core/Inc/main.h
 f411ceu6\utils_time.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
 f411ceu6\utils_time.o: ../Core/Inc/stm32f4xx_hal_conf.h
@@ -29,3 +29,6 @@ f411ceu6\utils_time.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_e
 f411ceu6\utils_time.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h
 f411ceu6\utils_time.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h
 f411ceu6\utils_time.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h
+f411ceu6\utils_time.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd.h
+f411ceu6\utils_time.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usb.h
+f411ceu6\utils_time.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd_ex.h

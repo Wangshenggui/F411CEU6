@@ -18,7 +18,7 @@ struct KEY_FSM_Structure
 	uint32_t debounce_delay;					// 消抖延时
     uint32_t last_tick;                         // 上次记录时间
     ClickHandle_t click_handle;                 // 按键单击回调函数
-    KEY_STATE (*get_state)(KEY_ID);     // 获取状态函数
+    KEY_STATE (*get_state)(KEY_ID);				// 获取状态函数
 };
 
 /*定义key状态机结构体*/

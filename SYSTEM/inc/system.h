@@ -19,9 +19,14 @@
 /*************MID头文件加载************/
 #include "led_fsm.h"
 #include "key_fsm.h"
+#include "usbd_cdc_if.h"
 /**************************************/
 
 /*************APP头文件加载************/
+
+/**************************************/
+
+/*************Utils头文件加载************/
 
 /**************************************/
 
@@ -51,28 +56,28 @@
     /* 普通调试输出 */
     #define debug_printf(fmt, ...) \
     do { \
-        printf("[%s:%d] [%lu]: " fmt, __FILENAME__, __LINE__, \
+        printf("[%s:%d] [%u]: " fmt, __FILENAME__, __LINE__, \
             HAL_GetTick(), ##__VA_ARGS__); \
     } while(0)
 
     /* INFO 级别（绿色）*/
     #define debug_info(fmt, ...) \
         do { \
-            printf(COLOR_GREEN "[INFO] [%lu] [%s:%d]: " fmt COLOR_RESET, \
+            printf(COLOR_GREEN "[INFO] [%u] [%s:%d]: " fmt COLOR_RESET, \
                 HAL_GetTick(), __FILENAME__, __LINE__, ##__VA_ARGS__); \
         } while(0)
 
     /* WARN 级别（黄色）*/
     #define debug_warn(fmt, ...) \
         do { \
-            printf(COLOR_YELLOW "[WARN] [%lu] [%s:%d]: " fmt COLOR_RESET, \
+            printf(COLOR_YELLOW "[WARN] [%u] [%s:%d]: " fmt COLOR_RESET, \
                 HAL_GetTick(), __FILENAME__, __LINE__, ##__VA_ARGS__); \
         } while(0)
 
     /* ERROR 级别（红色）*/
     #define debug_error(fmt, ...) \
         do { \
-            printf(COLOR_RED "[ERROR] [%lu] [%s:%d]: " fmt COLOR_RESET, \
+            printf(COLOR_RED "[ERROR] [%u] [%s:%d]: " fmt COLOR_RESET, \
                 HAL_GetTick(), __FILENAME__, __LINE__, ##__VA_ARGS__); \
         } while(0)
 

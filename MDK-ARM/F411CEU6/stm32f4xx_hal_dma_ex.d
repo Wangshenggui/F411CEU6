@@ -27,3 +27,6 @@ f411ceu6\stm32f4xx_hal_dma_ex.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_h
 f411ceu6\stm32f4xx_hal_dma_ex.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h
 f411ceu6\stm32f4xx_hal_dma_ex.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h
 f411ceu6\stm32f4xx_hal_dma_ex.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h
+f411ceu6\stm32f4xx_hal_dma_ex.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd.h
+f411ceu6\stm32f4xx_hal_dma_ex.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usb.h
+f411ceu6\stm32f4xx_hal_dma_ex.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd_ex.h
