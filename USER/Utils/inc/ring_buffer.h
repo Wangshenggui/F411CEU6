@@ -5,18 +5,11 @@
 #include <stdbool.h>
 #include <string.h>
 
-#define RING_BUFFER_SIZE 2048
-typedef struct
-{
-    uint8_t buffer[RING_BUFFER_SIZE];
-    volatile uint16_t head;
-    volatile uint16_t tail;
-    volatile uint16_t size;
-}
-RingBuffer_Structure;
+/*前向声明*/
+typedef struct RingBuffer_Structure RingBuffer_Structure;
 
-// 函数声明
-void RingBuff_Init(RingBuffer_Structure* ring);
+/*函数声明*/
+void RingBuff_Init(RingBuffer_Structure* ring, uint8_t *buff);
 bool RingBuff_IsEmpty(RingBuffer_Structure* ring);
 bool RingBuff_IsFull(RingBuffer_Structure* ring);
 uint16_t RingBuff_GetSize(RingBuffer_Structure* ring);

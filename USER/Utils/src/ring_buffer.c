@@ -1,20 +1,30 @@
 #include "ring_buffer.h"
 
 
-// 初始化环形缓冲区
-void RingBuff_Init(RingBuffer_Structure* ring)
+/*环形缓冲区结构体*/
+struct RingBuffer_Structure
+{
+    uint8_t *buffer;
+    volatile uint16_t head;
+    volatile uint16_t tail;
+    volatile uint16_t size;
+	uint16_t buffer_size;
+};
+
+/*初始化环形缓冲区*/
+void RingBuff_Init(RingBuffer_Structure* ring, uint8_t *buff)
 {
     if (ring == NULL)
         return;
 
+	ring->buffer = buff;
     ring->head = 0;
     ring->tail = 0;
     ring->size = 0;
-    // memset(ring->buffer,0,RING_BUFFER_SIZE);
 }
 
 // 判断缓冲区是否为空(true:空 false:非空)
-bool RingBuff_IsEmpty(RingBuffer_Structure* ring)
+static bool RingBuff_IsEmpty(RingBuffer_Structure* ring)
 {
     return (ring->size == 0);
 }
@@ -22,7 +32,7 @@ bool RingBuff_IsEmpty(RingBuffer_Structure* ring)
 // 判断缓冲区是否为满(true:满 false:未满)
 bool RingBuff_IsFull(RingBuffer_Structure* ring)
 {
-    return (ring->size == RING_BUFFER_SIZE);
+    return (ring->size == ring->buffer_size);
 }
 
 // 获取当前数据量
@@ -34,7 +44,7 @@ uint16_t RingBuff_GetSize(RingBuffer_Structure* ring)
 // 获取剩余空间
 uint16_t RingBuff_GetSpace(RingBuffer_Structure* ring)
 {
-    return RING_BUFFER_SIZE - ring->size;
+    return ring->buffer_size - ring->size;
 }
 
 // 写入1字节
@@ -45,7 +55,7 @@ bool RingBuff_WriteByte(RingBuffer_Structure* ring, uint8_t data)
         return false; // 缓冲区满，写入失败
     }
     ring->buffer[ring->head] = data;
-    ring->head = (ring->head + 1) % RING_BUFFER_SIZE;
+    ring->head = (ring->head + 1) % ring->buffer_size;
     ring->size++;
     return true;
 }
@@ -58,7 +68,7 @@ bool RingBuff_ReadByte(RingBuffer_Structure* ring, uint8_t* data)
         return false; // 缓冲区空，读取失败
     }
     *data = ring->buffer[ring->tail];
-    ring->tail = (ring->tail + 1) % RING_BUFFER_SIZE;
+    ring->tail = (ring->tail + 1) % ring->buffer_size;
     ring->size--;
     return true;
 }
@@ -70,7 +80,7 @@ bool RingBuff_ReadByte(RingBuffer_Structure* ring, uint8_t* data)
 // uint16_t write_len = (len < space) ? len : space;
 // for (uint16_t i = 0; i < write_len; i++) {
 // ring->buffer[ring->head] = src[i];
-// ring->head = (ring->head + 1) % RING_BUFFER_SIZE;
+// ring->head = (ring->head + 1) % ring->buffer_size;
 // ring->size++;
 // }
 // return write_len;
@@ -80,7 +90,7 @@ uint16_t RingBuff_WriteBytes(RingBuffer_Structure* ring, uint8_t* src, uint16_t 
     uint16_t space = RingBuff_GetSpace(ring);
     uint16_t write_len = (len < space) ? len : space;
     // 计算连续空间大小
-    uint16_t until_end = RING_BUFFER_SIZE - ring->head;
+    uint16_t until_end = ring->buffer_size - ring->head;
     if (write_len <= until_end)
     {
         // 一次拷贝完成
@@ -92,7 +102,7 @@ uint16_t RingBuff_WriteBytes(RingBuffer_Structure* ring, uint8_t* src, uint16_t 
         memcpy(&ring->buffer[ring->head], src, until_end);
         memcpy(&ring->buffer[0], src + until_end, write_len - until_end);
     }
-    ring->head = (ring->head + write_len) % RING_BUFFER_SIZE;
+    ring->head = (ring->head + write_len) % ring->buffer_size;
     ring->size += write_len;
     return write_len;
 }
@@ -103,7 +113,7 @@ uint16_t RingBuff_WriteBytes(RingBuffer_Structure* ring, uint8_t* src, uint16_t 
 // uint16_t read_len = (len < ring->size) ? len : ring->size;
 // for (uint16_t i = 0; i < read_len; i++) {
 // dst[i] = ring->buffer[ring->tail];
-// ring->tail = (ring->tail + 1) % RING_BUFFER_SIZE;
+// ring->tail = (ring->tail + 1) % ring->buffer_size;
 // ring->size--;
 // }
 // return read_len;
@@ -112,7 +122,7 @@ uint16_t RingBuff_ReadBytes(RingBuffer_Structure* ring, uint8_t* dst, uint16_t l
 {
     uint16_t read_len = (len < ring->size) ? len : ring->size;
     // 计算连续数据大小
-    uint16_t until_end = RING_BUFFER_SIZE - ring->tail;
+    uint16_t until_end = ring->buffer_size - ring->tail;
     if (read_len <= until_end)
     {
         // 一次拷贝完成
@@ -124,7 +134,7 @@ uint16_t RingBuff_ReadBytes(RingBuffer_Structure* ring, uint8_t* dst, uint16_t l
         memcpy(dst, &ring->buffer[ring->tail], until_end);
         memcpy(dst + until_end, &ring->buffer[0], read_len - until_end);
     }
-    ring->tail = (ring->tail + read_len) % RING_BUFFER_SIZE;
+    ring->tail = (ring->tail + read_len) % ring->buffer_size;
     ring->size -= read_len;
     return read_len;
 }
@@ -135,6 +145,6 @@ void RingBuff_Clear(RingBuffer_Structure* ring)
     ring->head = 0;
     ring->tail = 0;
     ring->size = 0;
-    // memset(ring->buffer, 0, RING_BUFFER_SIZE);
+    // memset(ring->buffer, 0, ring->buffer_size);
 }
 
