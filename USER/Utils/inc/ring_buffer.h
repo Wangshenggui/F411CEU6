@@ -10,8 +10,6 @@ typedef struct RingBuffer_Structure RingBuffer_Structure;
 
 /*函数声明*/
 void RingBuff_Init(RingBuffer_Structure* ring, uint8_t *buff);
-bool RingBuff_IsEmpty(RingBuffer_Structure* ring);
-bool RingBuff_IsFull(RingBuffer_Structure* ring);
 uint16_t RingBuff_GetSize(RingBuffer_Structure* ring);
 uint16_t RingBuff_GetSpace(RingBuffer_Structure* ring);
 bool RingBuff_WriteByte(RingBuffer_Structure* ring, uint8_t data);

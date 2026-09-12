@@ -15,10 +15,12 @@ typedef struct
 /* init levels */
 typedef enum
 {
-	INIT_LEVEL_SYS,	//系统层
-	INIT_LEVEL_BSP,	//BSP驱动层
-	INIT_LEVEL_MID,	//中间驱动层
-	INIT_LEVEL_APP,	//应用层
+	INIT_LEVEL_SYS,			//系统层
+	INIT_LEVEL_BSP_EARLY,   // BSP 最早
+    INIT_LEVEL_BSP,         // BSP
+    INIT_LEVEL_BSP_LATE,    // BSP 最晚
+	INIT_LEVEL_MID,			//中间驱动层
+	INIT_LEVEL_APP,			//应用层
 	INIT_LEVEL_COUNT
 } Init_Level_Enum;
 
@@ -32,17 +34,12 @@ typedef enum
     }
 
 /* wrappers */
-#define INIT_SYS(fn) \
-    INIT_EXPORT(fn, INIT_LEVEL_SYS)
-
-#define INIT_BSP(fn) \
-    INIT_EXPORT(fn, INIT_LEVEL_BSP)
-
-#define INIT_MID(fn) \
-    INIT_EXPORT(fn, INIT_LEVEL_MID)
-
-#define INIT_APP(fn) \
-    INIT_EXPORT(fn, INIT_LEVEL_APP)
+#define INIT_SYS(fn)        INIT_EXPORT(fn, INIT_LEVEL_SYS)
+#define INIT_BSP_EARLY(fn)  INIT_EXPORT(fn, INIT_LEVEL_BSP_EARLY)
+#define INIT_BSP(fn)        INIT_EXPORT(fn, INIT_LEVEL_BSP)
+#define INIT_BSP_LATE(fn)   INIT_EXPORT(fn, INIT_LEVEL_BSP_LATE)
+#define INIT_MID(fn)        INIT_EXPORT(fn, INIT_LEVEL_MID)
+#define INIT_APP(fn)        INIT_EXPORT(fn, INIT_LEVEL_APP)
 
 void auto_initcalls(void);
 

@@ -94,12 +94,12 @@ uint8_t UserRxBufferFS[APP_RX_DATA_SIZE];
 uint8_t UserTxBufferFS[APP_TX_DATA_SIZE];
 
 /* USER CODE BEGIN PRIVATE_VARIABLES */
-/*¶¨Òåusb½á¹¹Ìå*/
+/*ï¿½ï¿½ï¿½ï¿½usbï¿½á¹¹ï¿½ï¿½*/
 struct USB_CDC_Structure
 {
 	__IO uint8_t state;
 };
-/*´´½¨¶ÔÏó*/
+/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 USB_CDC_Structure usb_cdc = 
 {
 	.state = CDC_TX_COMPLETE,

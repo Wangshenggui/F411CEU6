@@ -18,6 +18,9 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
+#include "spi.h"
+#include "tim.h"
 #include "usb_device.h"
 #include "gpio.h"
 
@@ -55,39 +58,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-/*key按键单击回调函数*/
-void key_ClickHandler(KEY_ID id)
-{
-	static uint8_t flag = 0;
-	
-	switch(id)
-	{
-		case(KEY):
-		{
-			debug_printf("key click\r\n");
-			debug_info("key click\r\n");
-			debug_warn("key click\r\n");
-			debug_error("key click\r\n");
-			
-			if (flag)
-			{
-				LED_FSM_SetBlinkEvent(&led_blue_fsm, 100, 500);
-			}
-			else
-			{
-				LED_FSM_SetBlinkEvent(&led_blue_fsm, 500, 100);
-			}
-			flag = !flag;
-		}
-		break;
-		
-		default:
-		{
-			
-		}
-		break;
-	}
-}
+extern void LCD_DrawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color);
 /* USER CODE END 0 */
 
 /**
@@ -119,10 +90,16 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_USB_DEVICE_Init();
+  MX_SPI1_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 	// 段收集自动初始化
 	auto_initcalls();
+	
+  uint16_t colors[] = {WHITE, BLACK, BLUE, RED, GREEN, YELLOW, CYAN, MAGENTA};
+  uint8_t color_count = sizeof(colors) / sizeof(colors[0]);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -136,6 +113,24 @@ int main(void)
 	  
 		KEY_FSM_Run(&key_fsm, systick);
 		LED_FSM_Run(&led_blue_fsm, systick);
+	  
+	  static uint32_t frame_count = 0;
+	  static uint32_t last_tick = 0;
+	  
+	  frame_count++;
+	  if (systick - last_tick >= 1000)
+	  {
+		last_tick = systick;
+		  debug_printf("fps: %u\r\n", frame_count);
+		  frame_count = 0;
+	  }
+	  
+//	  HAL_Delay(100);
+	  static uint8_t i = 0;
+    LCD_Clear(colors[i++ % color_count]);
+//	  LCD_Clear(0xF800);	// 蓝色
+//	  LCD_Clear(0x07E0);	// 红色
+//	  LCD_Clear(0x001F);	// 绿色
   }
   /* USER CODE END 3 */
 }

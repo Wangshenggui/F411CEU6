@@ -23,31 +23,31 @@ void RingBuff_Init(RingBuffer_Structure* ring, uint8_t *buff)
     ring->size = 0;
 }
 
-// 判断缓冲区是否为空(true:空 false:非空)
+/*判断缓冲区是否为空(true:空 false:非空)*/
 static bool RingBuff_IsEmpty(RingBuffer_Structure* ring)
 {
     return (ring->size == 0);
 }
 
-// 判断缓冲区是否为满(true:满 false:未满)
-bool RingBuff_IsFull(RingBuffer_Structure* ring)
+/*判断缓冲区是否为满(true:满 false:未满)*/
+static bool RingBuff_IsFull(RingBuffer_Structure* ring)
 {
     return (ring->size == ring->buffer_size);
 }
 
-// 获取当前数据量
+/*获取当前数据量*/
 uint16_t RingBuff_GetSize(RingBuffer_Structure* ring)
 {
     return ring->size;
 }
 
-// 获取剩余空间
+/*获取剩余空间*/
 uint16_t RingBuff_GetSpace(RingBuffer_Structure* ring)
 {
     return ring->buffer_size - ring->size;
 }
 
-// 写入1字节
+/*写入1字节*/
 bool RingBuff_WriteByte(RingBuffer_Structure* ring, uint8_t data)
 {
     if (RingBuff_IsFull(ring))
@@ -60,7 +60,7 @@ bool RingBuff_WriteByte(RingBuffer_Structure* ring, uint8_t data)
     return true;
 }
 
-// 读取1字节
+/*读取1字节*/
 bool RingBuff_ReadByte(RingBuffer_Structure* ring, uint8_t* data)
 {
     if (RingBuff_IsEmpty(ring))
@@ -72,19 +72,20 @@ bool RingBuff_ReadByte(RingBuffer_Structure* ring, uint8_t* data)
     ring->size--;
     return true;
 }
-
-// 批量写入
-// uint16_t RingBuff_WriteBytes(RingBuffer_Structure *ring, uint8_t *src, uint16_t len)
-// {
-// uint16_t space = RingBuff_GetSpace(ring);
-// uint16_t write_len = (len < space) ? len : space;
-// for (uint16_t i = 0; i < write_len; i++) {
-// ring->buffer[ring->head] = src[i];
-// ring->head = (ring->head + 1) % ring->buffer_size;
-// ring->size++;
-// }
-// return write_len;
-// }
+/*
+uint16_t RingBuff_WriteBytes(RingBuffer_Structure *ring, uint8_t *src, uint16_t len)
+{
+	uint16_t space = RingBuff_GetSpace(ring);
+	uint16_t write_len = (len < space) ? len : space;
+	for (uint16_t i = 0; i < write_len; i++)
+	{
+		ring->buffer[ring->head] = src[i];
+		ring->head = (ring->head + 1) % ring->buffer_size;
+		ring->size++;
+	}
+	return write_len;
+}
+*/
 uint16_t RingBuff_WriteBytes(RingBuffer_Structure* ring, uint8_t* src, uint16_t len)
 {
     uint16_t space = RingBuff_GetSpace(ring);
@@ -107,17 +108,18 @@ uint16_t RingBuff_WriteBytes(RingBuffer_Structure* ring, uint8_t* src, uint16_t 
     return write_len;
 }
 
-// 批量读取
-// uint16_t RingBuff_ReadBytes(RingBuffer_Structure *ring, uint8_t *dst, uint16_t len)
-// {
-// uint16_t read_len = (len < ring->size) ? len : ring->size;
-// for (uint16_t i = 0; i < read_len; i++) {
-// dst[i] = ring->buffer[ring->tail];
-// ring->tail = (ring->tail + 1) % ring->buffer_size;
-// ring->size--;
-// }
-// return read_len;
-// }
+/*
+uint16_t RingBuff_ReadBytes(RingBuffer_Structure *ring, uint8_t *dst, uint16_t len)
+{
+	uint16_t read_len = (len < ring->size) ? len : ring->size;
+	for (uint16_t i = 0; i < read_len; i++)
+	{
+		dst[i] = ring->buffer[ring->tail];
+		ring->tail = (ring->tail + 1) % ring->buffer_size;
+		ring->size--;
+	}
+	return read_len;
+}*/
 uint16_t RingBuff_ReadBytes(RingBuffer_Structure* ring, uint8_t* dst, uint16_t len)
 {
     uint16_t read_len = (len < ring->size) ? len : ring->size;

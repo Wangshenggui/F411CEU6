@@ -33,14 +33,14 @@
 /* USER CODE BEGIN INCLUDE */
 typedef enum
 {
-    CDC_TX_BUSY,			// ÕýÔÚ·¢ËÍ
-    CDC_TX_COMPLETE,		// ·¢ËÍÍê³É
-    CDC_TX_ERROR			// ·¢ËÍ´íÎó
+    CDC_TX_BUSY,			// ï¿½ï¿½ï¿½Ú·ï¿½ï¿½ï¿½
+    CDC_TX_COMPLETE,		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    CDC_TX_ERROR			// ï¿½ï¿½ï¿½Í´ï¿½ï¿½ï¿½
 } CDC_Tx_State;
-/*Ç°ÏòÉùÃ÷½á¹¹Ìå*/
+/*Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á¹¹ï¿½ï¿½*/
 typedef struct USB_CDC_Structure USB_CDC_Structure;
 
-/*Íâ²¿½Ó¿Ú*/
+/*ï¿½â²¿ï¿½Ó¿ï¿½*/
 uint8_t GetCDC_TxState(void);
 void SetCDC_TxState(uint8_t state);
 /* USER CODE END INCLUDE */
