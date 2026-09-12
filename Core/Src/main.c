@@ -110,27 +110,18 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 		uint32_t systick = HAL_GetTick();
-	  
+
 		KEY_FSM_Run(&key_fsm, systick);
 		LED_FSM_Run(&led_blue_fsm, systick);
+
+		uint8_t *p = mymalloc(SRAMIN, 1 * 1024);
+		debug_info("0x%p  %d\r\n", p, my_mem_perused(SRAMIN));
+		myfree(SRAMIN, p);
+
+		HAL_Delay(500);
 	  
-	  static uint32_t frame_count = 0;
-	  static uint32_t last_tick = 0;
-	  
-	  frame_count++;
-	  if (systick - last_tick >= 1000)
-	  {
-		last_tick = systick;
-		  debug_printf("fps: %u\r\n", frame_count);
-		  frame_count = 0;
-	  }
-	  
-//	  HAL_Delay(100);
-	  static uint8_t i = 0;
-    LCD_Clear(colors[i++ % color_count]);
-//	  LCD_Clear(0xF800);	// 蓝色
-//	  LCD_Clear(0x07E0);	// 红色
-//	  LCD_Clear(0x001F);	// 绿色
+		static uint8_t i = 0;
+		LCD_Clear(colors[i++ % color_count]);
   }
   /* USER CODE END 3 */
 }

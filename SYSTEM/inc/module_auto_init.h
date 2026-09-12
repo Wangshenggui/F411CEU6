@@ -15,12 +15,12 @@ typedef struct
 /* init levels */
 typedef enum
 {
-	INIT_LEVEL_SYS,			//系统层
+	INIT_LEVEL_SYS,			// 系统层
 	INIT_LEVEL_BSP_EARLY,   // BSP 最早
-    INIT_LEVEL_BSP,         // BSP
-    INIT_LEVEL_BSP_LATE,    // BSP 最晚
-	INIT_LEVEL_MID,			//中间驱动层
-	INIT_LEVEL_APP,			//应用层
+	INIT_LEVEL_BSP,         // BSP
+	INIT_LEVEL_BSP_LATE,    // BSP 最晚
+	INIT_LEVEL_MID,			// 中间驱动层
+	INIT_LEVEL_APP,			// 应用层
 	INIT_LEVEL_COUNT
 } Init_Level_Enum;
 

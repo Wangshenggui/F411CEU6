@@ -652,6 +652,11 @@
               <FileType>1</FileType>
               <FilePath>..\SYSTEM\src\system.c</FilePath>
             </File>
+            <File>
+              <FileName>malloc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SYSTEM\src\malloc.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
