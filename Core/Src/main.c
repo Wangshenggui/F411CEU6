@@ -114,14 +114,23 @@ int main(void)
 		KEY_FSM_Run(&key_fsm, systick);
 		LED_FSM_Run(&led_blue_fsm, systick);
 
-		uint8_t *p = mymalloc(SRAMIN, 1 * 1024);
-		debug_info("0x%p  %d\r\n", p, my_mem_perused(SRAMIN));
-		myfree(SRAMIN, p);
+		CST816_Scan();
+		if(TPR_Structure.TouchSta == TP_PRES_DOWN)
+		{
+			// x=TPR_Structure.x[0];
+			// y=TPR_Structure.y[0];
 
-		HAL_Delay(500);
-	  
-		static uint8_t i = 0;
-		LCD_Clear(colors[i++ % color_count]);
+			static uint8_t i = 0;
+			LCD_Clear(colors[i++ % color_count]);
+
+			static uint16_t a = 0;
+			if(a++>=10)
+			{
+				a=0;
+				LED_FSM_SetToggleEvent(&led_blue_fsm);
+				debug_info("%d-%d\r\n",TPR_Structure.x[0],TPR_Structure.y[0]);
+			}
+		}
   }
   /* USER CODE END 3 */
 }

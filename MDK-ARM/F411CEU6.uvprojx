@@ -622,6 +622,16 @@
               <FileType>1</FileType>
               <FilePath>..\USER\BSP\src\tim_it.c</FilePath>
             </File>
+            <File>
+              <FileName>touch_iic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\BSP\src\touch_iic.c</FilePath>
+            </File>
+            <File>
+              <FileName>touch.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\BSP\src\touch.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

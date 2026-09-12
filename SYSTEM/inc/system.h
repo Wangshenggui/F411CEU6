@@ -17,6 +17,7 @@
 #include "key.h"
 #include "spi_lcd.h"
 #include "spi_it.h"
+#include "touch.h"
 /**************************************/
 
 /*************MID头文件加载************/
