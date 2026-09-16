@@ -3,7 +3,7 @@
 
 
 /*按键单击回调函数*/
-void key_ClickHandler(KEY_ID id)
+void Key_Click_Callback(KEY_ID id)
 {
 	switch(id)
 	{
@@ -22,7 +22,7 @@ void key_ClickHandler(KEY_ID id)
 }
 
 /*按键长按回调函数*/
-void key_LongHandler(KEY_ID id)
+void Key_LongPress_Callback(KEY_ID id)
 {
 	switch(id)
 	{

@@ -5,12 +5,12 @@
 
 
 /*按键单击回调函数*/
-__attribute__((weak)) void key_ClickHandler(KEY_ID id)
+__attribute__((weak)) void Key_Click_Callback(KEY_ID id)
 {
 	UNUSED(id);
 }
 /*按键长按回调函数*/
-__attribute__((weak)) void key_LongHandler(KEY_ID id)
+__attribute__((weak)) void Key_LongPress_Callback(KEY_ID id)
 {
 	UNUSED(id);
 }
@@ -24,9 +24,7 @@ struct KEY_FSM_Structure
     KEY_FSM_EVENT event;                        // 触发事件
 	uint32_t debounce_delay;					// 消抖延时
     uint32_t last_tick;                         // 上次记录时间
-    ClickHandle_t click_handle;                 // 按键单击回调函数
     uint32_t long_press_time;                   // 长按触发时间
-    LongHandle_t long_handle;                   // 长按回调函数
 };
 
 /*定义key状态机结构体*/
@@ -39,9 +37,7 @@ void mid_key_fsm_init()
     {
         .id = KEY,
         .get_state = Key_GetState,
-        .click_handle = key_ClickHandler,
         .long_press_time = 1000,
-        .long_handle = key_LongHandler
     };
 	// 初始化KEY状态机
 	key_fsm = KEY_FSM_Init(&cfg);
@@ -55,15 +51,13 @@ KEY_FSM_Structure KEY_FSM_Init(const KEY_FSM_Config *cfg)
 {
     KEY_FSM_Structure fsm;
 
-	fsm.id = cfg->id;                   // 按键ID
-    fsm.get_state = cfg->get_state;       // 指向获取状态函数
-    fsm.state = KEY_FSM_STATE_IDLE;     // 初始化空闲状态
-    fsm.event = KEY_FSM_EVENT_NONE;     // 初始化无事件
-	fsm.debounce_delay = DEBOUNCE_DELAY;    // 消抖延时(ms)
+	fsm.id = cfg->id;                           // 按键ID
+    fsm.get_state = cfg->get_state;             // 指向获取状态函数
+    fsm.state = KEY_FSM_STATE_IDLE;             // 初始化空闲状态
+    fsm.event = KEY_FSM_EVENT_NONE;             // 初始化无事件
+	fsm.debounce_delay = DEBOUNCE_DELAY;        // 消抖延时(ms)
     fsm.last_tick = 0;
-    fsm.click_handle = cfg->click_handle;       // 单击回调函数
     fsm.long_press_time = cfg->long_press_time; // 长按触发延时
-    fsm.long_handle = cfg->long_handle;     // 长按回调函数
 
     return fsm;
 }
@@ -153,7 +147,7 @@ void KEY_FSM_Run(KEY_FSM_Structure* fsm, uint32_t tick)
         // 单击
         case(KEY_FSM_STATE_CLICK):
         {
-            fsm->click_handle(fsm->id);		    // 执行按下回调函数
+            Key_Click_Callback(fsm->id);        // 执行按下回调函数
             fsm->event = KEY_FSM_EVENT_NONE;    // 回到无事件
             fsm->state = KEY_FSM_STATE_IDLE;    // 回到空闲
         }
@@ -164,7 +158,7 @@ void KEY_FSM_Run(KEY_FSM_Structure* fsm, uint32_t tick)
         {
             if(fsm->event == KEY_FSM_EVENT_PRESS_LONG)
             {
-                fsm->long_handle(fsm->id);		        // 执行长按回调函数
+                Key_LongPress_Callback(fsm->id);        // 执行长按回调函数
                 fsm->event = KEY_FSM_EVENT_NONE;        // 无事件
             }
             

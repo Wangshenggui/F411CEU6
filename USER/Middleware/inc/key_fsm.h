@@ -25,12 +25,6 @@ typedef enum
 {
     KEY_FSM_EVENT_NONE,                     // 无事件
     KEY_FSM_EVENT_PRESS_LONG,               // 长按事件
-    // KEY_FSM_EVENT_PRESS,                    // 检测到按下
-    // KEY_FSM_EVENT_PRESS_DEBOUNCE_TIMEOUT,   // 按下消抖时间到
-    // KEY_FSM_EVENT_PRESS_CONFIRMED,          // 确认按下
-    // KEY_FSM_EVENT_RELEASE,                  // 检测到松开
-    // KEY_FSM_EVENT_RELEASE_DEBOUNCE_TIMEOUT, // 松开消抖时间到
-    // KEY_FSM_EVENT_RELEASE_CONFIRMED,        // 确认松开
     KEY_FSM_EVENT_COUNT
 } KEY_FSM_EVENT;
 
@@ -43,9 +37,7 @@ typedef struct
 {
 	KEY_ID id;									// id
     KEY_STATE (*get_state)(KEY_ID);				// 获取状态函数
-    ClickHandle_t click_handle;                 // 按键单击回调函数
     uint32_t long_press_time;                   // 长按触发时间
-    LongHandle_t long_handle;                   // 长按回调函数
 } KEY_FSM_Config;
 
 /*前向声明，防止外部修改*/
