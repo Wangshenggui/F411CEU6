@@ -2,15 +2,33 @@
 #include "system.h"
 
 
-
-/*key按键单击回调函数*/
+/*鎸夐敭鍗曞嚮鍥炶皟鍑芥暟*/
 void key_ClickHandler(KEY_ID id)
 {
 	switch(id)
 	{
 		case(KEY):
 		{
+			debug_info("Click\r\n");
+		}
+		break;
+		
+		default:
+		{
 			
+		}
+		break;
+	}
+}
+
+/*鎸夐敭闀挎寜鍥炶皟鍑芥暟*/
+void key_LongHandler(KEY_ID id)
+{
+	switch(id)
+	{
+		case(KEY):
+		{
+			debug_info("Long\r\n");
 		}
 		break;
 		
