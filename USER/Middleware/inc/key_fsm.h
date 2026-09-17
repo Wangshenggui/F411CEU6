@@ -16,17 +16,13 @@ typedef enum
     KEY_FSM_STATE_RELEASE,                  // 松开
     KEY_FSM_STATE_RELEASE_DEBOUNCE,         // 松开消抖
     KEY_FSM_STATE_CLICK,                    // 单击
+    KEY_FSM_STATE_CLICK_WAIT,               // 等待第二次按下
+    KEY_FSM_STATE_DOUBLE_PRESS,             // 第二次按下消抖
+    KEY_FSM_STATE_DOUBLE_RELEASE,           // 第二次松开消抖
     KEY_FSM_STATE_LONG,                     // 长按
+    KEY_FSM_STATE_LONG_REPEAT,              // 长按重复
     KEY_FSM_STATE_COUNT
 } KEY_FSM_STATE;
-
-/*KEY FSM事件枚举*/
-typedef enum
-{
-    KEY_FSM_EVENT_NONE,                     // 无事件
-    KEY_FSM_EVENT_PRESS_LONG,               // 长按事件
-    KEY_FSM_EVENT_COUNT
-} KEY_FSM_EVENT;
 
 /*定义点击回调函数类型*/
 typedef void (*ClickHandle_t)(KEY_ID id);
@@ -38,6 +34,8 @@ typedef struct
 	KEY_ID id;									// id
     KEY_STATE (*get_state)(KEY_ID);				// 获取状态函数
     uint32_t long_press_time;                   // 长按触发时间
+    uint32_t long_repeat_time;                  // 长按重复触发时间
+    uint32_t double_click_time;                 // 双击窗口
 } KEY_FSM_Config;
 
 /*前向声明，防止外部修改*/
