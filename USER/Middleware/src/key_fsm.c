@@ -1,29 +1,28 @@
 #include "key_fsm.h"
 #include "module_auto_init.h"
-#include "utils_time.h"
 
 
 
 /*按键单击回调函数*/
-__attribute__((weak)) void Key_Click_Callback(KEY_ID id)
+__weak void Key_Click_Callback(KEY_ID id)
 {
 	UNUSED(id);
 }
 ////////////////////////////////////////////////////////////
 /*按键长按回调函数*/
-__attribute__((weak)) void Key_LongPress_Callback(KEY_ID id)
+__weak void Key_LongPress_Callback(KEY_ID id)
 {
 	UNUSED(id);
 }
 ////////////////////////////////////////////////////////////
 /*按键长按重复回调函数*/
-__attribute__((weak)) void Key_LongPressRepeat_Callback(KEY_ID id)
+__weak void Key_LongPressRepeat_Callback(KEY_ID id)
 {
 	UNUSED(id);
 }
 ////////////////////////////////////////////////////////////
 /*按键双击回调函数*/
-__attribute__((weak)) void Key_DoubleClick_Callback(KEY_ID id)
+__weak void Key_DoubleClick_Callback(KEY_ID id)
 {
 	UNUSED(id);
 }
@@ -42,42 +41,39 @@ struct KEY_FSM_Structure
     uint32_t long_repeat_time;                  // 长按重复触发时间
     uint32_t double_click_time;                 // 双击窗口
 };
-
-/*定义key状态机结构体*/
-KEY_FSM_Structure key_fsm;
-/*mid层自动初始化*/
-void mid_key_fsm_init()
+/***************************************************************************/
+/***************************************************************************/
+static inline uint32_t key_get_tick_diff(uint32_t current, uint32_t previous)
 {
-    // 配置状态机结构体
-	const KEY_FSM_Config cfg = 
-    {
-        .id = KEY,
-        .get_state = Key_GetState,
-        .long_press_time = 1000,    // 长按触发时间
-        .long_repeat_time = 200,    // 连续触发周期
-        .double_click_time = 0,   // 双击窗口，0表示禁用双击
-    };
-	// 初始化KEY状态机
-	key_fsm = KEY_FSM_Init(&cfg);
+    return current - previous;
 }
-INIT_MID(mid_key_fsm_init);
 
-/***************************************************************************/
-/***************************************************************************/
+/*分配静态内存池*/
+static KEY_FSM_Structure fsm_pool[KEY_FSM_MAX_NUM];
+static uint8_t fsm_used = 0;	// 第一块内存开始分配
+
 /*按键状态机初始化*/
-KEY_FSM_Structure KEY_FSM_Init(const KEY_FSM_Config *cfg)
+KEY_FSM_Structure *KEY_FSM_Init(const KEY_FSM_Config *cfg)
 {
-    KEY_FSM_Structure fsm;
+	if (cfg == NULL || cfg->get_state == NULL)
+	{
+        return NULL;
+    }
+    if (fsm_used >= KEY_FSM_MAX_NUM)
+	{
+        return NULL;                 // 池满
+    }
+    KEY_FSM_Structure *fsm = &fsm_pool[fsm_used++];
 
-	fsm.id = cfg->id;                               // 按键ID
-    fsm.get_state = cfg->get_state;                 // 指向获取状态函数
-    fsm.state = KEY_FSM_STATE_IDLE;                 // 初始化空闲状态
-    fsm.last_state = KEY_FSM_STATE_IDLE;            // 初始化空闲状态
-	fsm.debounce_delay = DEBOUNCE_DELAY;            // 消抖延时(ms)
-    fsm.last_tick = 0;
-    fsm.long_press_time = cfg->long_press_time;     // 长按触发延时
-    fsm.long_repeat_time = cfg->long_repeat_time;   // 长按重复触发时间
-    fsm.double_click_time = cfg->double_click_time; // 双击窗口
+	fsm->id = cfg->id;                               // 按键ID
+    fsm->get_state = cfg->get_state;                 // 指向获取状态函数
+    fsm->state = KEY_FSM_STATE_IDLE;                 // 初始化空闲状态
+    fsm->last_state = KEY_FSM_STATE_IDLE;            // 初始化空闲状态
+	fsm->debounce_delay = DEBOUNCE_DELAY;            // 消抖延时(ms)
+    fsm->last_tick = 0;
+    fsm->long_press_time = cfg->long_press_time;     // 长按触发延时
+    fsm->long_repeat_time = cfg->long_repeat_time;   // 长按重复触发时间
+    fsm->double_click_time = cfg->double_click_time; // 双击窗口
 
     return fsm;
 }
@@ -85,7 +81,10 @@ KEY_FSM_Structure KEY_FSM_Init(const KEY_FSM_Config *cfg)
 /*按键状态机轮询*/
 void KEY_FSM_Run(KEY_FSM_Structure* fsm, uint32_t tick)
 {
-
+	if (fsm == NULL)
+	{
+        return;
+    }
     switch(fsm->state)
     {
         // 空闲
@@ -107,7 +106,7 @@ void KEY_FSM_Run(KEY_FSM_Structure* fsm, uint32_t tick)
             if(fsm->get_state(fsm->id) == KEY_STATE_Press)
             {
                 // 持续按下超过DEBOUNCE_TIME，确认按下
-                if(get_tick_diff(tick, fsm->last_tick) > fsm->debounce_delay)
+                if(key_get_tick_diff(tick, fsm->last_tick) > fsm->debounce_delay)
                 {
                     fsm->state = KEY_FSM_STATE_PRESS;  // 切换到按下状态
                 }
@@ -130,7 +129,7 @@ void KEY_FSM_Run(KEY_FSM_Structure* fsm, uint32_t tick)
                 fsm->state = KEY_FSM_STATE_RELEASE_DEBOUNCE;    // 松开消抖
             }
             // 触发长按
-            else if(get_tick_diff(tick, fsm->last_tick) >= fsm->long_press_time)
+            else if(key_get_tick_diff(tick, fsm->last_tick) >= fsm->long_press_time)
             {
                 fsm->state = KEY_FSM_STATE_LONG;        // 触发长按
             }
@@ -144,7 +143,7 @@ void KEY_FSM_Run(KEY_FSM_Structure* fsm, uint32_t tick)
             if(fsm->get_state(fsm->id) == KEY_STATE_Release)
             {
                 // 松开超过DEBOUNCE_TIMEms，确认松开
-                if(get_tick_diff(tick, fsm->last_tick) > fsm->debounce_delay)
+                if(key_get_tick_diff(tick, fsm->last_tick) > fsm->debounce_delay)
                 {
                     if(fsm->last_state == KEY_FSM_STATE_PRESS)
                     {
@@ -189,7 +188,7 @@ void KEY_FSM_Run(KEY_FSM_Structure* fsm, uint32_t tick)
                 fsm->state = KEY_FSM_STATE_DOUBLE_PRESS;    // 双击
             }
             // 确认单击
-            else if(get_tick_diff(tick, fsm->last_tick) >= fsm->double_click_time)
+            else if(key_get_tick_diff(tick, fsm->last_tick) >= fsm->double_click_time)
             {
                 fsm->state = KEY_FSM_STATE_CLICK;
             }
@@ -201,7 +200,7 @@ void KEY_FSM_Run(KEY_FSM_Structure* fsm, uint32_t tick)
         {
             if(fsm->get_state(fsm->id) == KEY_STATE_Press)
             {
-                if(get_tick_diff(tick, fsm->last_tick) > fsm->debounce_delay)
+                if(key_get_tick_diff(tick, fsm->last_tick) > fsm->debounce_delay)
                 {
                     Key_DoubleClick_Callback(fsm->id);
                     fsm->last_tick = tick;
@@ -222,7 +221,7 @@ void KEY_FSM_Run(KEY_FSM_Structure* fsm, uint32_t tick)
         {
             if(fsm->get_state(fsm->id) == KEY_STATE_Release)
             {
-                if(get_tick_diff(tick, fsm->last_tick) > fsm->debounce_delay)
+                if(key_get_tick_diff(tick, fsm->last_tick) > fsm->debounce_delay)
                 {
                     fsm->state = KEY_FSM_STATE_IDLE;   // 彻底结束
                 }
@@ -260,7 +259,7 @@ void KEY_FSM_Run(KEY_FSM_Structure* fsm, uint32_t tick)
                 fsm->last_state = fsm->state;   // 记录当前状态
                 fsm->state = KEY_FSM_STATE_RELEASE_DEBOUNCE;    // 松开消抖
             }
-            else if(get_tick_diff(tick, fsm->last_tick) >= fsm->long_repeat_time)
+            else if(key_get_tick_diff(tick, fsm->last_tick) >= fsm->long_repeat_time)
             {
                 fsm->last_tick = tick;                  // 重新记录连续触发基准
                 Key_LongPressRepeat_Callback(fsm->id);  // 执行长按重复回调函数

@@ -59,6 +59,7 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 extern void LCD_DrawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color);
+extern KEY_FSM_Structure *key_fsm;
 /* USER CODE END 0 */
 
 /**
@@ -111,7 +112,7 @@ int main(void)
     /* USER CODE BEGIN 3 */
 		uint32_t systick = HAL_GetTick();
 
-		KEY_FSM_Run(&key_fsm, systick);
+		KEY_FSM_Run(key_fsm, systick);
 		LED_FSM_Run(&led_blue_fsm, systick);
 
 		CST816_Scan();

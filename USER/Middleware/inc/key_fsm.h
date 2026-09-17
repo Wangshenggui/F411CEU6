@@ -4,8 +4,21 @@
 #include "main.h"
 #include "key.h"
 
+
+/*最大状态机数量(用于静态内存池分配)*/
+#define KEY_FSM_MAX_NUM 1
+
 /*默认消抖时间(ms)*/
 #define DEBOUNCE_DELAY  10
+
+/*按键单击回调函数*/
+__weak void Key_Click_Callback(KEY_ID id);
+/*按键长按回调函数*/
+__weak void Key_LongPress_Callback(KEY_ID id);
+/*按键长按重复回调函数*/
+__weak void Key_LongPressRepeat_Callback(KEY_ID id);
+/*按键双击回调函数*/
+__weak void Key_DoubleClick_Callback(KEY_ID id);
 
 /*KEY FSM状态枚举*/
 typedef enum
@@ -40,11 +53,9 @@ typedef struct
 
 /*前向声明，防止外部修改*/
 typedef struct KEY_FSM_Structure KEY_FSM_Structure;
-/*定义按键状态机结构体*/
-extern KEY_FSM_Structure key_fsm;
 
 /*按键状态机初始化*/
-KEY_FSM_Structure KEY_FSM_Init(const KEY_FSM_Config *cfg);
+KEY_FSM_Structure *KEY_FSM_Init(const KEY_FSM_Config *cfg);
 /*按键状态机轮询*/
 void KEY_FSM_Run(KEY_FSM_Structure* fsm, uint32_t tick);
 
