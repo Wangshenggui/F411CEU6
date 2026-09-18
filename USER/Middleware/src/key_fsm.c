@@ -2,45 +2,63 @@
 #include "module_auto_init.h"
 
 
-
-/*ÊåâÈîÆÂçïÂáªÂõûË∞ÉÂáΩÊï∞*/
+/*∞¥º¸µ•ª˜ªÿµ˜∫Ø ˝*/
 __weak void Key_Click_Callback(KEY_ID id)
 {
 	UNUSED(id);
 }
 ////////////////////////////////////////////////////////////
-/*ÊåâÈîÆÈïøÊåâÂõûË∞ÉÂáΩÊï∞*/
+/*∞¥º¸≥§∞¥ªÿµ˜∫Ø ˝*/
 __weak void Key_LongPress_Callback(KEY_ID id)
 {
 	UNUSED(id);
 }
 ////////////////////////////////////////////////////////////
-/*ÊåâÈîÆÈïøÊåâÈáçÂ§çÂõûË∞ÉÂáΩÊï∞*/
+/*∞¥º¸≥§∞¥÷ÿ∏¥ªÿµ˜∫Ø ˝*/
 __weak void Key_LongPressRepeat_Callback(KEY_ID id)
 {
 	UNUSED(id);
 }
 ////////////////////////////////////////////////////////////
-/*ÊåâÈîÆÂèåÂáªÂõûË∞ÉÂáΩÊï∞*/
+/*∞¥º¸À´ª˜ªÿµ˜∫Ø ˝*/
 __weak void Key_DoubleClick_Callback(KEY_ID id)
 {
 	UNUSED(id);
 }
 
 
-/*KEY FSMÁªìÊûÑ‰Ωì*/
+/*KEY FSMΩ·ππÃÂ*/
 struct KEY_FSM_Structure
 {
 	KEY_ID id;									// id
-    KEY_STATE (*get_state)(KEY_ID);				// Ëé∑ÂèñÁä∂ÊÄÅÂáΩÊï∞
-    KEY_FSM_STATE state;                        // ÊåâÈîÆÁä∂ÊÄÅ
-    KEY_FSM_STATE last_state;                   // ‰∏ä‰∏™Áä∂ÊÄÅ
-	uint32_t debounce_delay;					// Ê∂àÊäñÂª∂Êó∂
-    uint32_t last_tick;                         // ‰∏äÊ¨°ËÆ∞ÂΩïÊó∂Èó¥
-    uint32_t long_press_time;                   // ÈïøÊåâËß¶ÂèëÊó∂Èó¥
-    uint32_t long_repeat_time;                  // ÈïøÊåâÈáçÂ§çËß¶ÂèëÊó∂Èó¥
-    uint32_t double_click_time;                 // ÂèåÂáªÁ™óÂè£
+    KEY_STATE (*get_state)(KEY_ID);				// ªÒ»°◊¥Ã¨∫Ø ˝
+    KEY_FSM_STATE state;                        // ∞¥º¸◊¥Ã¨
+    KEY_FSM_STATE last_state;                   // …œ∏ˆ◊¥Ã¨
+	uint32_t debounce_delay;					// œ˚∂∂—” ±
+    uint32_t last_tick;                         // …œ¥Œº«¬º ±º‰
+    uint32_t long_press_time;                   // ≥§∞¥¥•∑¢ ±º‰
+    uint32_t long_repeat_time;                  // ≥§∞¥÷ÿ∏¥¥•∑¢ ±º‰
+    uint32_t double_click_time;                 // À´ª˜¥∞ø⁄
 };
+
+/*∂®“Âkey◊¥Ã¨ª˙Ω·ππÃÂ*/
+KEY_FSM_Structure *key_fsm;
+/*mid≤„◊‘∂Ø≥ı ºªØ*/
+void mid_key_fsm_init()
+{
+    // ≈‰÷√◊¥Ã¨ª˙Ω·ππÃÂ
+	const KEY_FSM_Config cfg = 
+    {
+        .id = KEY,
+        .get_state = Key_GetState,
+        .long_press_time = 1000,    // ≥§∞¥¥•∑¢ ±º‰
+        .long_repeat_time = 200,    // ¡¨–¯¥•∑¢÷‹∆⁄
+        .double_click_time = 300,   // À´ª˜¥∞ø⁄£¨0±Ì æΩ˚”√À´ª˜
+    };
+	// ≥ı ºªØKEY◊¥Ã¨ª˙
+	key_fsm = KEY_FSM_Init(&cfg);
+}
+INIT_MID(mid_key_fsm_init);
 /***************************************************************************/
 /***************************************************************************/
 static inline uint32_t key_get_tick_diff(uint32_t current, uint32_t previous)
@@ -48,11 +66,11 @@ static inline uint32_t key_get_tick_diff(uint32_t current, uint32_t previous)
     return current - previous;
 }
 
-/*ÂàÜÈÖçÈùôÊÄÅÂÜÖÂ≠òÊ±†*/
+/*∑÷≈‰æ≤Ã¨ƒ⁄¥Ê≥ÿ*/
 static KEY_FSM_Structure fsm_pool[KEY_FSM_MAX_NUM];
-static uint8_t fsm_used = 0;	// Á¨¨‰∏ÄÂùóÂÜÖÂ≠òÂºÄÂßãÂàÜÈÖç
+static uint8_t fsm_used = 0;	// µ⁄“ªøÈƒ⁄¥Êø™ º∑÷≈‰
 
-/*ÊåâÈîÆÁä∂ÊÄÅÊú∫ÂàùÂßãÂåñ*/
+/*∞¥º¸◊¥Ã¨ª˙≥ı ºªØ*/
 KEY_FSM_Structure *KEY_FSM_Init(const KEY_FSM_Config *cfg)
 {
 	if (cfg == NULL || cfg->get_state == NULL)
@@ -61,24 +79,24 @@ KEY_FSM_Structure *KEY_FSM_Init(const KEY_FSM_Config *cfg)
     }
     if (fsm_used >= KEY_FSM_MAX_NUM)
 	{
-        return NULL;                 // Ê±†Êª°
+        return NULL;                 // ≥ÿ¬˙
     }
     KEY_FSM_Structure *fsm = &fsm_pool[fsm_used++];
 
-	fsm->id = cfg->id;                               // ÊåâÈîÆID
-    fsm->get_state = cfg->get_state;                 // ÊåáÂêëËé∑ÂèñÁä∂ÊÄÅÂáΩÊï∞
-    fsm->state = KEY_FSM_STATE_IDLE;                 // ÂàùÂßãÂåñÁ©∫Èó≤Áä∂ÊÄÅ
-    fsm->last_state = KEY_FSM_STATE_IDLE;            // ÂàùÂßãÂåñÁ©∫Èó≤Áä∂ÊÄÅ
-	fsm->debounce_delay = DEBOUNCE_DELAY;            // Ê∂àÊäñÂª∂Êó∂(ms)
+	fsm->id = cfg->id;                               // ∞¥º¸ID
+    fsm->get_state = cfg->get_state;                 // ÷∏œÚªÒ»°◊¥Ã¨∫Ø ˝
+    fsm->state = KEY_FSM_STATE_IDLE;                 // ≥ı ºªØø’œ–◊¥Ã¨
+    fsm->last_state = KEY_FSM_STATE_IDLE;            // ≥ı ºªØø’œ–◊¥Ã¨
+	fsm->debounce_delay = KEY_DEBOUNCE_DELAY;            // œ˚∂∂—” ±(ms)
     fsm->last_tick = 0;
-    fsm->long_press_time = cfg->long_press_time;     // ÈïøÊåâËß¶ÂèëÂª∂Êó∂
-    fsm->long_repeat_time = cfg->long_repeat_time;   // ÈïøÊåâÈáçÂ§çËß¶ÂèëÊó∂Èó¥
-    fsm->double_click_time = cfg->double_click_time; // ÂèåÂáªÁ™óÂè£
+    fsm->long_press_time = cfg->long_press_time;     // ≥§∞¥¥•∑¢—” ±
+    fsm->long_repeat_time = cfg->long_repeat_time;   // ≥§∞¥÷ÿ∏¥¥•∑¢ ±º‰
+    fsm->double_click_time = cfg->double_click_time; // À´ª˜¥∞ø⁄
 
     return fsm;
 }
 
-/*ÊåâÈîÆÁä∂ÊÄÅÊú∫ËΩÆËØ¢*/
+/*∞¥º¸◊¥Ã¨ª˙¬÷—Ø*/
 void KEY_FSM_Run(KEY_FSM_Structure* fsm, uint32_t tick)
 {
 	if (fsm == NULL)
@@ -87,107 +105,109 @@ void KEY_FSM_Run(KEY_FSM_Structure* fsm, uint32_t tick)
     }
     switch(fsm->state)
     {
-        // Á©∫Èó≤
+        // ø’œ–
         case(KEY_FSM_STATE_IDLE):
         {
-            // Ê£ÄÊµãÂà∞Êåâ‰∏ãÔºå‰∏îÊ≠§ÂâçÊó†‰∫ã‰ª∂
+            // ºÏ≤‚µΩ∞¥œ¬
             if(fsm->get_state(fsm->id) == KEY_STATE_Press)
             {
-                fsm->last_tick = tick;                      // ËÆ∞ÂΩïÊåâ‰∏ãÊó∂Êó∂Èó¥
-                fsm->state = KEY_FSM_STATE_PRESS_DEBOUNCE;  // ÂàáÊç¢Âà∞Êåâ‰∏ãÊ∂àÊäñÁä∂ÊÄÅ
+                fsm->last_tick = tick;                      // º«¬º∞¥œ¬ ± ±º‰
+                fsm->state = KEY_FSM_STATE_PRESS_DEBOUNCE;  // «–ªªµΩ∞¥œ¬œ˚∂∂◊¥Ã¨
             }
         }
         break;
 
-        // Êåâ‰∏ãÊ∂àÊäñ
+        // ∞¥œ¬œ˚∂∂
         case(KEY_FSM_STATE_PRESS_DEBOUNCE):
         {
-            // Ê£ÄÊµãÂà∞Êåâ‰∏ã
+            // ºÏ≤‚µΩ∞¥œ¬
             if(fsm->get_state(fsm->id) == KEY_STATE_Press)
             {
-                // ÊåÅÁª≠Êåâ‰∏ãË∂ÖËøáDEBOUNCE_TIMEÔºåÁ°ÆËÆ§Êåâ‰∏ã
+                // ≥÷–¯∞¥œ¬≥¨π˝DEBOUNCE_TIME£¨»∑»œ∞¥œ¬
                 if(key_get_tick_diff(tick, fsm->last_tick) > fsm->debounce_delay)
                 {
-                    fsm->state = KEY_FSM_STATE_PRESS;  // ÂàáÊç¢Âà∞Êåâ‰∏ãÁä∂ÊÄÅ
+                    fsm->state = KEY_FSM_STATE_PRESS;  // «–ªªµΩ∞¥œ¬◊¥Ã¨
                 }
             }
-            else    // ËØØËß¶
+            else    // ŒÛ¥•
             {
-                fsm->state = KEY_FSM_STATE_IDLE;    // ÂõûÂà∞Á©∫Èó≤
+                fsm->state = KEY_FSM_STATE_IDLE;    // ªÿµΩø’œ–
             }
         }
         break;
 
-        // Á°ÆËÆ§Êåâ‰∏ã
+        // »∑»œ∞¥œ¬
         case(KEY_FSM_STATE_PRESS):
         {
-            // Á≠âÂæÖÊùæÂºÄ
+            // µ»¥˝À…ø™
             if(fsm->get_state(fsm->id) == KEY_STATE_Release)
             {
-                fsm->last_tick = tick;                          // ËÆ∞ÂΩïÊùæÂºÄÊó∂Èó¥
-                fsm->last_state = fsm->state;                   // ËÆ∞ÂΩïÂΩìÂâçÁä∂ÊÄÅ
-                fsm->state = KEY_FSM_STATE_RELEASE_DEBOUNCE;    // ÊùæÂºÄÊ∂àÊäñ
+                fsm->last_tick = tick;                          // º«¬ºÀ…ø™ ±º‰
+                fsm->last_state = fsm->state;                   // º«¬ºµ±«∞◊¥Ã¨
+                fsm->state = KEY_FSM_STATE_RELEASE_DEBOUNCE;    // À…ø™œ˚∂∂
             }
-            // Ëß¶ÂèëÈïøÊåâ
+            // ¥•∑¢≥§∞¥
             else if(key_get_tick_diff(tick, fsm->last_tick) >= fsm->long_press_time)
             {
-                fsm->state = KEY_FSM_STATE_LONG;        // Ëß¶ÂèëÈïøÊåâ
+                fsm->state = KEY_FSM_STATE_LONG;        // ¥•∑¢≥§∞¥
             }
         }
         break;
 
-        // ÊùæÂºÄÊ∂àÊäñ
+        // À…ø™œ˚∂∂
         case(KEY_FSM_STATE_RELEASE_DEBOUNCE):
         {
-            // ÁªßÁª≠Ê£ÄÊµãÊùæÂºÄ
+            // ºÃ–¯ºÏ≤‚À…ø™
             if(fsm->get_state(fsm->id) == KEY_STATE_Release)
             {
-                // ÊùæÂºÄË∂ÖËøáDEBOUNCE_TIMEmsÔºåÁ°ÆËÆ§ÊùæÂºÄ
+                // À…ø™≥¨π˝DEBOUNCE_TIMEms£¨»∑»œÀ…ø™
                 if(key_get_tick_diff(tick, fsm->last_tick) > fsm->debounce_delay)
                 {
                     if(fsm->last_state == KEY_FSM_STATE_PRESS)
                     {
-                        fsm->state = KEY_FSM_STATE_RELEASE;  // ÂàáÊç¢Âà∞ÊùæÂºÄÁä∂ÊÄÅ
+                        fsm->state = KEY_FSM_STATE_RELEASE;  // «–ªªµΩÀ…ø™◊¥Ã¨
                     }
+                    // ≥§∞¥÷ÿ∏¥Ã¯◊™µƒ
                     else if(fsm->last_state == KEY_FSM_STATE_LONG_REPEAT)
                     {
-                        fsm->state = KEY_FSM_STATE_IDLE;    // ÂõûÂà∞Á©∫Èó≤
+                        fsm->state = KEY_FSM_STATE_IDLE;    // ªÿµΩø’œ–
                     }
                 }
             }
-			// ËØØËß¶
+			// ŒÛ¥•
             else
             {
-                fsm->state = fsm->last_state;       // ÂõûÂà∞ÂéüÁä∂ÊÄÅ
+                fsm->state = fsm->last_state;       // ªÿµΩ‘≠◊¥Ã¨
             }
         }
         break;
 
-        // ÊùæÂºÄ
+        // À…ø™
         case(KEY_FSM_STATE_RELEASE):
         {
+            // Õ®π˝À´ª˜¥∞ø⁄—°‘Ò «∑Ò¥•∑¢À´ª˜
             if(fsm->double_click_time > 0)
             {
                 fsm->last_tick = tick;
-                fsm->state = KEY_FSM_STATE_CLICK_WAIT;    // Á≠âÂæÖÁ¨¨‰∫åÊ¨°Êåâ‰∏ã
+                fsm->state = KEY_FSM_STATE_CLICK_WAIT;    // µ»¥˝µ⁄∂˛¥Œ∞¥œ¬
             }
             else
             {
-                fsm->state = KEY_FSM_STATE_CLICK;
+                fsm->state = KEY_FSM_STATE_CLICK;   // ÷±Ω”¥•∑¢µ•ª˜
             }
         }
         break;
 
-        // Á≠âÂæÖÁ¨¨‰∫åÊ¨°Êåâ‰∏ã
+        // µ»¥˝µ⁄∂˛¥Œ∞¥œ¬
         case(KEY_FSM_STATE_CLICK_WAIT):
         {
-            // Á≠âÂæÖÊúüÂÜÖÂÜçÊ¨°Êåâ‰∏ã
+            // µ»¥˝∆⁄ƒ⁄‘Ÿ¥Œ∞¥œ¬
             if(fsm->get_state(fsm->id) == KEY_STATE_Press)
             {
                 fsm->last_tick = tick;
-                fsm->state = KEY_FSM_STATE_DOUBLE_PRESS;    // ÂèåÂáª
+                fsm->state = KEY_FSM_STATE_DOUBLE_PRESS_DEBOUNCE;    // µ⁄∂˛¥Œ∞¥œ¬œ˚∂∂
             }
-            // Á°ÆËÆ§ÂçïÂáª
+            // ≥¨ ±»∑»œµ•ª˜
             else if(key_get_tick_diff(tick, fsm->last_tick) >= fsm->double_click_time)
             {
                 fsm->state = KEY_FSM_STATE_CLICK;
@@ -195,81 +215,111 @@ void KEY_FSM_Run(KEY_FSM_Structure* fsm, uint32_t tick)
         }
         break;
 
-        // ÂèåÂáª
-        case KEY_FSM_STATE_DOUBLE_PRESS:
+        // µ⁄∂˛¥Œ∞¥œ¬œ˚∂∂
+        case (KEY_FSM_STATE_DOUBLE_PRESS_DEBOUNCE):
         {
             if(fsm->get_state(fsm->id) == KEY_STATE_Press)
             {
+                // ¡¨–¯∞¥œ¬
                 if(key_get_tick_diff(tick, fsm->last_tick) > fsm->debounce_delay)
                 {
-                    Key_DoubleClick_Callback(fsm->id);
                     fsm->last_tick = tick;
-                    fsm->state = KEY_FSM_STATE_DOUBLE_RELEASE;  // Á≠âÊùæÂºÄ
+                    fsm->state = KEY_FSM_STATE_DOUBLE_RELEASE_DEBOUNCE;  // µ»À…ø™
                 }
             }
             else
             {
-                // ÊäñÂä®ËØØËß¶ÔºöÂõû CLICK_WAITÔºåÈáçÁΩÆÂü∫ÂáÜ
+                // ∂∂∂ØŒÛ¥•£∫ªÿ CLICK_WAIT£¨÷ÿ÷√ª˘◊º
                 fsm->last_tick = tick;
                 fsm->state = KEY_FSM_STATE_CLICK_WAIT;
             }
         }
         break;
 
-        // Á¨¨‰∫åÊ¨°ÊùæÂºÄÊ∂àÊäñ
-        case KEY_FSM_STATE_DOUBLE_RELEASE:
+        // µ⁄∂˛¥ŒÀ…ø™œ˚∂∂
+        case (KEY_FSM_STATE_DOUBLE_RELEASE_DEBOUNCE):
         {
-            if(fsm->get_state(fsm->id) == KEY_STATE_Release)
+            // ‘⁄À´ª˜¥∞ø⁄ƒ⁄
+            if(key_get_tick_diff(tick, fsm->last_tick) <= fsm->double_click_time)
             {
-                if(key_get_tick_diff(tick, fsm->last_tick) > fsm->debounce_delay)
+                if(fsm->get_state(fsm->id) == KEY_STATE_Release)
                 {
-                    fsm->state = KEY_FSM_STATE_IDLE;   // ÂΩªÂ∫ïÁªìÊùü
+                    // »∑»œÀ…ø™£¨¥•∑¢À´ª˜ªÿµ˜
+                    if(key_get_tick_diff(tick, fsm->last_tick) > fsm->debounce_delay)
+                    {
+                        fsm->state = KEY_FSM_STATE_DOUBLE;   // ¥•∑¢À´ª˜
+                    }
                 }
             }
+            // ≥¨π˝À´ª˜¥∞ø⁄ ”Œ™Œﬁ–ßÀ´ª˜
             else
             {
-                fsm->last_tick = tick;   // ‰ªçÂú®Êåâ‰∏ãÔºåÂà∑Êñ∞Âü∫ÂáÜ
+                // À´ª˜∞¥œ¬≥¨ ±£¨ºÏ≤‚µΩÀ…ø™
+                if(fsm->get_state(fsm->id) == KEY_STATE_Release)
+                {
+                    fsm->state = KEY_FSM_STATE_IDLE;    // ªÿµΩø’œ–
+                }
             }
         }
         break;
 
-        // ÂçïÂáª
+        // µ•ª˜
         case(KEY_FSM_STATE_CLICK):
         {
-            Key_Click_Callback(fsm->id);        // ÊâßË°åÊåâ‰∏ãÂõûË∞ÉÂáΩÊï∞
-            fsm->state = KEY_FSM_STATE_IDLE;    // ÂõûÂà∞Á©∫Èó≤
+            Key_Click_Callback(fsm->id);        // ÷¥––∞¥œ¬ªÿµ˜∫Ø ˝
+            fsm->state = KEY_FSM_STATE_IDLE;    // ªÿµΩø’œ–
         }
         break;
 
-        // ÈïøÊåâ
+        // À´ª˜
+        case(KEY_FSM_STATE_DOUBLE):
+        {
+            Key_DoubleClick_Callback(fsm->id);  // ÷¥––À´ª˜ªÿµ˜∫Ø ˝
+            fsm->last_tick = tick;
+            fsm->state = KEY_FSM_STATE_LOCK;    // œ»…œÀ¯£¨∑¿÷π»˝¡¨ª˜µº÷¬¥•∑¢µ•ª˜
+        }
+        break;
+
+        // ≥§∞¥
         case(KEY_FSM_STATE_LONG):
         {
-            fsm->last_tick = tick;                          // ËÆ∞ÂΩïÁ¨¨‰∏ÄÊ¨°ÈïøÊåâÊó∂Èó¥
-            Key_LongPress_Callback(fsm->id);                // ÊâßË°åÈïøÊåâÂõûË∞ÉÂáΩÊï∞
-            fsm->state = KEY_FSM_STATE_LONG_REPEAT;         // ÈïøÊåâÈáçÂ§ç
+            fsm->last_tick = tick;                          // º«¬ºµ⁄“ª¥Œ≥§∞¥ ±º‰
+            Key_LongPress_Callback(fsm->id);                // ÷¥––≥§∞¥ªÿµ˜∫Ø ˝
+            fsm->state = KEY_FSM_STATE_LONG_REPEAT;         // ≥§∞¥÷ÿ∏¥
         }
         break;
 
-        // ÈïøÊåâÈáçÂ§ç
+        // ≥§∞¥÷ÿ∏¥
         case(KEY_FSM_STATE_LONG_REPEAT):
         {
-            // Ê£ÄÊµãÂà∞ÊùæÂºÄ
+            // ºÏ≤‚µΩÀ…ø™
             if(fsm->get_state(fsm->id) == KEY_STATE_Release)
             {
-                fsm->last_state = fsm->state;   // ËÆ∞ÂΩïÂΩìÂâçÁä∂ÊÄÅ
-                fsm->state = KEY_FSM_STATE_RELEASE_DEBOUNCE;    // ÊùæÂºÄÊ∂àÊäñ
+                fsm->last_state = fsm->state;   // º«¬ºµ±«∞◊¥Ã¨
+                fsm->state = KEY_FSM_STATE_RELEASE_DEBOUNCE;    // À…ø™œ˚∂∂
             }
             else if(key_get_tick_diff(tick, fsm->last_tick) >= fsm->long_repeat_time)
             {
-                fsm->last_tick = tick;                  // ÈáçÊñ∞ËÆ∞ÂΩïËøûÁª≠Ëß¶ÂèëÂü∫ÂáÜ
-                Key_LongPressRepeat_Callback(fsm->id);  // ÊâßË°åÈïøÊåâÈáçÂ§çÂõûË∞ÉÂáΩÊï∞
+                fsm->last_tick = tick;                  // ÷ÿ–¬º«¬º¡¨–¯¥•∑¢ª˘◊º
+                Key_LongPressRepeat_Callback(fsm->id);  // ÷¥––≥§∞¥÷ÿ∏¥ªÿµ˜∫Ø ˝
+            }
+        }
+        break;
+
+        // ◊¥Ã¨ª˙…œÀ¯
+        case(KEY_FSM_STATE_LOCK):
+        {
+            // µ»¥˝Ω‚À¯
+            if(key_get_tick_diff(tick, fsm->last_tick) > KEY_LOCK_DELAY)
+            {
+                fsm->state = KEY_FSM_STATE_IDLE;    // ªÿµΩø’œ–
             }
         }
         break;
         
 		default:
 		{
-			fsm->state = KEY_FSM_STATE_IDLE;    // ÂõûÂà∞Á©∫Èó≤
+			fsm->state = KEY_FSM_STATE_IDLE;    // ªÿµΩø’œ–
 		}
 		break;
     }

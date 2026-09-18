@@ -9,7 +9,10 @@
 #define KEY_FSM_MAX_NUM 1
 
 /*默认消抖时间(ms)*/
-#define DEBOUNCE_DELAY  10
+#define KEY_DEBOUNCE_DELAY  10
+
+/*上锁时长*/
+#define KEY_LOCK_DELAY  300
 
 /*按键单击回调函数*/
 __weak void Key_Click_Callback(KEY_ID id);
@@ -30,10 +33,12 @@ typedef enum
     KEY_FSM_STATE_RELEASE_DEBOUNCE,         // 松开消抖
     KEY_FSM_STATE_CLICK,                    // 单击
     KEY_FSM_STATE_CLICK_WAIT,               // 等待第二次按下
-    KEY_FSM_STATE_DOUBLE_PRESS,             // 第二次按下消抖
-    KEY_FSM_STATE_DOUBLE_RELEASE,           // 第二次松开消抖
+    KEY_FSM_STATE_DOUBLE_PRESS_DEBOUNCE,    // 第二次按下消抖
+    KEY_FSM_STATE_DOUBLE_RELEASE_DEBOUNCE,  // 第二次松开消抖
+    KEY_FSM_STATE_DOUBLE,                   // 双击
     KEY_FSM_STATE_LONG,                     // 长按
     KEY_FSM_STATE_LONG_REPEAT,              // 长按重复
+    KEY_FSM_STATE_LOCK,                     // 状态机上锁
     KEY_FSM_STATE_COUNT
 } KEY_FSM_STATE;
 
